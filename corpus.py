@@ -1,5 +1,6 @@
 from document import *
 from trie import *
+from index import *
 
 
 class Corpus:
