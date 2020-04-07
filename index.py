@@ -1,4 +1,6 @@
 from document import *
+import math
+from operator import itemgetter
 
 
 class Index:
@@ -13,7 +15,9 @@ class Index:
         Returns:
         None.
         """
-        pass
+        self.index = dict() 
+        self.CountWords = dict()
+        self.N = 0
 
     def add_doc(self, doc: Document) -> None:
         """Adds doc to the index.
@@ -25,7 +29,18 @@ class Index:
         Returns:
         None.
         """
-        pass
+        self.N+=1
+        i = 0
+        for word, loc in doc.words():
+          i += 1
+          word = index_preprocess(word)
+          if word:
+            self.index[word] = self.index.get(word, []) + [(doc.doc_id, len(loc))]
+        if i:
+          self.CountWords[doc.doc_id] = self.CountWords.get(doc.doc_id, 0) + i
+        else:
+          self.CountWords[doc.doc_id] = 1
+          
 
     def query(self, query_string: str) -> [(str, float)]:
         """Returns a ranked list of document IDs from the index and their TF-IDF score
@@ -40,7 +55,25 @@ class Index:
         the corresponding document with query_string. The list is sorted in
         order to decreasding similarity.
         """
-        pass
+        #tf-idf(t, d) = tf(t, d) * log(N/(df + 1))
+        #tf(t,d) = count of t in d / number of words in d
+        #df(t) = occurrence of t in documents
+        df = 0
+        TF_IDF = dict()
+        query_string = query_tokenize(query_string)
+        for word in query_string:
+          df = len(self.index.get(word, []))
+          if not df:
+            df = 1
+          for docId, count in self.index.get(word,[]):
+            tf = count/self.CountWords[docId]
+            tf_idf = tf * math.log(self.N/df, 10)
+            print(tf_idf)
+            TF_IDF[docId] = TF_IDF.get(docId, 0) + tf_idf
+        return sorted(TF_IDF.items(), key=itemgetter(1), reverse = True)
+
+
+        
 
 # ------------------------- Helpers -------------------------
 
