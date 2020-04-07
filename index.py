@@ -68,7 +68,6 @@ class Index:
           for docId, count in self.index.get(word,[]):
             tf = count/self.CountWords[docId]
             tf_idf = tf * math.log(self.N/df, 10)
-            print(tf_idf)
             TF_IDF[docId] = TF_IDF.get(docId, 0) + tf_idf
         return sorted(TF_IDF.items(), key=itemgetter(1), reverse = True)
 
