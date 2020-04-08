@@ -61,7 +61,7 @@ def add_word(node: TrieNode, word: str, locs: [Location]) -> None:
             n = n[word[i]]
         else:
             for j in range(i, len(word)-1):
-                n[word[j]] = {word[j+1]: None}
+                n[word[j]] = {word[j+1]: {}}
                 n = n[word[j]]
             break
         n[word[-1]] = {TERMINATOR: locs}
