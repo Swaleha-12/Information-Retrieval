@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 import pathlib
-
+import nltk
+#nltk.dowload('stopwords')
+from nltk.corpus import stopwords
 
 @dataclass
 class Location:
@@ -25,6 +27,7 @@ class Document:
         None.
         """
         # Extract ID from path.
+        
         path = pathlib.Path(path)
         self.doc_id = path.stem
         # Tokenize the content, replacing Unicode characters with '?'
@@ -67,6 +70,8 @@ def document_tokenize(content: str) -> {str: [(int, int)]}:
     # Extract ID from path and read the content.
     i = 0
     words = dict()
+    stop_words = stopwords.words('english') #remove stop words
+    content = content.replace("\n", " ") #replacing all the newlins with space so that following code can be executed
     while content[i:]:
         # Ignore non-letters
         if not content[i].isalpha():
@@ -79,6 +84,7 @@ def document_tokenize(content: str) -> {str: [(int, int)]}:
             stop = len(content)
         word = content[start:stop]
         # Save index bounds of word, proceed with the remaining content.
-        words[word] = words.get(word, []) + [(start, stop)]
+        if word not in stop_words:
+          words[word.lower()] = words.get(word, []) + [(start, stop)]
         i = stop + 1
     return words
