@@ -80,47 +80,47 @@ def test_index():
                 f'query {query} does not appear in result document {doc}'
 
 
-# def test_trie():
-#     '''Tests completion results by comparing them with reference results.
+def test_trie():
+    '''Tests completion results by comparing them with reference results.
 
-#     Performs various checks:
-#     - The number of completions must match
-#     - The completions must match
-#     - For each completion:
-#     -- The document ID's and their multiplicity must match.
-#     -- The start & stop indexes within the document must match, with tolerance.
-#     '''
-#     # Trie.
-#     for query, reference in cases:
-#         result = corpus.complete(query)
-#         # Same number of completions.
-#         res, ref = len(result), len(reference)
-#         assert res == ref, f'For query: {query}, result of length: {res} '\
-#             f'does not match reference length: {ref}'
-#         # Same completions.
-#         result = dict(result)
-#         reference = dict(reference)
-#         res, ref = set(result.keys()), set(reference.keys())
-#         assert res == ref, f'For query: {query}, result completions:\n{res}\n'\
-#             f'do not match reference completions:\n{ref}'
-#         # Check result for each completion.
-#         for word, res_locs in result.items():
-#             # Sort locations, secondary key: start, promary key: document ID.
-#             res_locs = sorted(res_locs, key=lambda loc: loc.start)
-#             res_locs = sorted(res_locs, key=lambda loc: loc.doc_id)
-#             ref_locs = sorted(reference[word], key=lambda loc: loc.start)
-#             ref_locs = sorted(ref_locs, key=lambda loc: loc.doc_id)
-#             for i, locs in enumerate(zip(res_locs, ref_locs)):
-#                 # Same document ID's in the same frequency.
-#                 res_loc, ref_loc = locs
-#                 res, ref = res_loc.doc_id, ref_loc.doc_id
-#                 assert res == ref, f'For {word}, mismatch at postiion {i+1} '\
-#                     f'between result documents:\n{[l.doc_id for l in res_locs]}\n '\
-#                     f'and reference documents:\n{[l.doc_id for l in ref_locs]}'
-#                 # Same start and stop, with some tolerance, in each document.
-#                 rs1, rs2 = res_loc.start, res_loc.stop
-#                 rf1, rf2 = ref_loc.start, ref_loc.stop
-#                 assert abs(rf1-rs1) <= 5 and abs(rf2-rs2) <= 5, \
-#                     f'For {word}, mismatch in boundaries at postiion {i+1} '\
-#                     f'between result documents:\n{res_locs}\n '\
-#                     f'and reference documents:\n{ref_locs}'
+    Performs various checks:
+    - The number of completions must match
+    - The completions must match
+    - For each completion:
+    -- The document ID's and their multiplicity must match.
+    -- The start & stop indexes within the document must match, with tolerance.
+    '''
+    # Trie.
+    for query, reference in cases:
+        result = corpus.complete(query)
+        # Same number of completions.
+        res, ref = len(result), len(reference)
+        assert res == ref, f'For query: {query}, result of length: {res} '\
+            f'does not match reference length: {ref}'
+        # Same completions.
+        result = dict(result)
+        reference = dict(reference)
+        res, ref = set(result.keys()), set(reference.keys())
+        assert res == ref, f'For query: {query}, result completions:\n{res}\n'\
+            f'do not match reference completions:\n{ref}'
+        # Check result for each completion.
+        for word, res_locs in result.items():
+            # Sort locations, secondary key: start, promary key: document ID.
+            res_locs = sorted(res_locs, key=lambda loc: loc.start)
+            res_locs = sorted(res_locs, key=lambda loc: loc.doc_id)
+            ref_locs = sorted(reference[word], key=lambda loc: loc.start)
+            ref_locs = sorted(ref_locs, key=lambda loc: loc.doc_id)
+            for i, locs in enumerate(zip(res_locs, ref_locs)):
+                # Same document ID's in the same frequency.
+                res_loc, ref_loc = locs
+                res, ref = res_loc.doc_id, ref_loc.doc_id
+                assert res == ref, f'For {word}, mismatch at postiion {i+1} '\
+                    f'between result documents:\n{[l.doc_id for l in res_locs]}\n '\
+                    f'and reference documents:\n{[l.doc_id for l in ref_locs]}'
+                # Same start and stop, with some tolerance, in each document.
+                rs1, rs2 = res_loc.start, res_loc.stop
+                rf1, rf2 = ref_loc.start, ref_loc.stop
+                assert abs(rf1-rs1) <= 5 and abs(rf2-rs2) <= 5, \
+                    f'For {word}, mismatch in boundaries at postiion {i+1} '\
+                    f'between result documents:\n{res_locs}\n '\
+                    f'and reference documents:\n{ref_locs}'
