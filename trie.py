@@ -10,45 +10,8 @@ class TrieNode:
     children: dict = field(default_factory=dict)
 
 
-@dataclass
-class Trie:
-    """A standard trie."""
-    _root: TrieNode = field(default_factory=TrieNode)
-
-    def add_doc(self, doc: Document) -> None:
-        """Adds words from doc to the trie.
-
-        Args:
-        - self: this trie, the one to add to. mandatory object reference.
-        - doc: the document whose words are to be added.
-
-        Returns:
-        None.
-        """
-        for w, locs in doc.words():
-            add_word(self._root, trie_preprocess(w), locs)
-
-    def complete(self, words: str) -> [(str, [Location])]:
-        """Returns prefix-matches in the trie to each of the words and their locations
-        in their documents.
-
-        Args:
-        - self: this trie, the one to match in . mandatory object reference.
-        - words: contains words to match
-
-        Returns:
-        A list of pairs where each pair contains a prefix-matched word from the
-        trie and a list of the locations where the word occurs in documents.
-        """
-        words = prefix_tokenize(words)
-        matches = []
-        for w in words:
-            w = prefix_preprocess(w)
-            matches.extend(match(self._root, w, w))
-        return matches
-
-
 # ------------------------- Helpers -------------------------
+
 
 def trie_preprocess(word: str) -> str:
     """Returns a processed version of word appropriate for adding to the trie.
@@ -91,7 +54,34 @@ def add_word(node: TrieNode, word: str, locs: [Location]) -> None:
     Returns:
     None.
     """
-    pass
+
+    n = node.children
+    for i in range(len(word)-1):
+        if word[i] in n:
+            n = n[word[i]]
+        else:
+            for j in range(i, len(word)-1):
+                n[word[j]] = {word[j+1]: None}
+                n = n[word[j]]
+            n[word[-1]] = {TERMINATOR: locs}
+            break
+
+
+def search(node: TrieNode, prefix: str) -> TrieNode:
+    for i in prefix:
+        if i in node.children:
+            node.children = node.children[i]
+    return node
+
+
+def dfs(root: dict, word: str, final=[]) -> [(str, [Location])]:
+    for a, n in root.items():
+        if a == TERMINATOR:
+            final.append((word, n))
+        else:
+            dfs(n, word+a, final)
+    return final
+
 
 def match(node: TrieNode, prefix: str, trace: str) -> [(str, [Location])]:
     """Returns prefix-matching words starting at node and the document locations
@@ -110,5 +100,52 @@ def match(node: TrieNode, prefix: str, trace: str) -> [(str, [Location])]:
     Returns:
     List of pairs where each pair contains a prefix-matched word and the
     locations where the word appears.
+
     """
-    pass
+
+    node = search(node, prefix)
+    word = prefix
+    dfs(node.children, word)
+
+
+@dataclass
+class Trie:
+    """A standard trie."""
+    _root: TrieNode = field(default_factory=TrieNode)
+
+    def add_doc(self, doc: Document) -> None:
+        """Adds words from doc to the trie.
+
+        Args:
+        - self: this trie, the one to add to. mandatory object reference.
+        - doc: the document whose words are to be added.
+
+        Returns:
+        None.
+        """
+        for w, locs in doc.words():
+            add_word(self._root, trie_preprocess(w), locs)
+
+    def complete(self, words: str) -> [(str, [Location])]:
+        """Returns prefix-matches in the trie to each of the words and their locations
+        in their documents.
+
+        Args:
+        - self: this trie, the one to match in . mandatory object reference.
+        - words: contains words to match
+
+        Returns:
+        A list of pairs where each pair contains a prefix-matched word from the
+        trie and a list of the locations where the word occurs in documents.
+        """
+        words = prefix_tokenize(words)
+        matches = []
+        for w in words:
+            matches.extend(match(self._root, w, w))
+        return matches
+
+
+'''tn = Trie()
+doc = Document("gfg.txt")
+tn.add_doc(doc)
+match(tn._root, "hel", "hel")'''
