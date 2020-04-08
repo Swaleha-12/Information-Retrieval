@@ -105,7 +105,7 @@ def match(node: TrieNode, prefix: str, trace: str) -> [(str, [Location])]:
 
     node = search(node, prefix)
     word = prefix
-    dfs(node.children, word)
+    return dfs(node.children, word)
 
 
 @dataclass
@@ -145,7 +145,4 @@ class Trie:
         return matches
 
 
-'''tn = Trie()
-doc = Document("gfg.txt")
-tn.add_doc(doc)
-match(tn._root, "hel", "hel")'''
+
