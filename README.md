@@ -63,4 +63,7 @@ Please use the following avenues:
 - discuss with your peers
 - talk to course staff in their desginated hours
 
+## Liabraries to Install:
+- NumPy
+- nltk (if error arises in stopwords then first download them by uncommenting line 5 in Document.py)
 
