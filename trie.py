@@ -56,16 +56,11 @@ def add_word(node: TrieNode, word: str, locs: [Location]) -> None:
     """
 
     n = node.children
-    for i in range(len(word)-1):
-        if word[i] in n:
-            n = n[word[i]]
-        else:
-            for j in range(i, len(word)-1):
-                n[word[j]] = {word[j+1]: {}}
-                n = n[word[j]]
-            break
-        n[word[-1]] = {TERMINATOR: locs}
-
+    for i in range(len(word)):
+        if word[i] not in n:
+            n[word[i]] = {}
+        n = n[word[i]]
+    n[TERMINATOR] = locs
 
 def search(node: TrieNode, prefix: str) -> TrieNode:
     for i in prefix:
