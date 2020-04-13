@@ -65,12 +65,13 @@ def search(node: TrieNode, prefix: str) -> TrieNode:
     return node
 
 
-def dfs(root: TrieNode, word: str, final=[]) -> [(str, [Location])]:
+def dfs(root: TrieNode, word: str, trace: str, final=[]) -> [(str, [Location])]:
     for a in root.children.keys():
         if a == TERMINATOR:
-            final.append((word, root.children[a]))
+            if word != trace:
+                final.append((word, root.children[a]))
         else:
-            dfs(root.children[a], word+a, final)
+            dfs(root.children[a], word+a, trace, final)
     return final
 
 
