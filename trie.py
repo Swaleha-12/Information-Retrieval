@@ -47,18 +47,15 @@ def add_word(node: TrieNode, word: str, locs: [Location]) -> None:
     None.
     """
 
-    n = node.children
     i = 0
     for char in word:
-        if char not in n:
-            break
-        n = n[char]
+        if char not in node.children.keys():
+            node.children[char] = TrieNode()
+        node = node.children[char]
         i += 1
 
-    for j in range(i, len(word)):
-        n[word[j]] = {}
-        n = n[word[j]]
-    n[TERMINATOR] = locs
+    if TERMINATOR not in node.children.keys():
+        node.children[TERMINATOR] = locs
 
 
 def search(node: TrieNode, prefix: str) -> TrieNode:
@@ -131,4 +128,8 @@ class Trie:
         return matches
 
 
-    
+"""tn = Trie()
+
+doc = Document("gfg.txt")
+tn.add_doc(doc)
+print(tn)"""
