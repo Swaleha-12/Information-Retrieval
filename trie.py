@@ -60,17 +60,17 @@ def add_word(node: TrieNode, word: str, locs: [Location]) -> None:
 
 def search(node: TrieNode, prefix: str) -> TrieNode:
     for i in prefix:
-        if i in node.children:
-            node.children = node.children[i]
+        if i in node.children.keys():
+            node = node.children[i]
     return node
 
 
-def dfs(root: dict, word: str, final=[]) -> [(str, [Location])]:
-    for a, n in root.items():
+def dfs(root: TrieNode, word: str, final=[]) -> [(str, [Location])]:
+    for a in root.children.keys():
         if a == TERMINATOR:
-            final.append((word, n))
+            final.append((word, root.children[a]))
         else:
-            dfs(n, word+a, final)
+            dfs(root.children[a], word+a, final)
     return final
 
 
@@ -92,7 +92,7 @@ def match(node: TrieNode, prefix: str, trace: str) -> [(str, [Location])]:
 
     node = search(node, prefix)
     word = prefix
-    return dfs(node.children, word)
+    return dfs(node, word)
 
 
 @dataclass
@@ -128,8 +128,8 @@ class Trie:
         return matches
 
 
-"""tn = Trie()
+'''tn = Trie()
 
 doc = Document("gfg.txt")
 tn.add_doc(doc)
-print(tn)"""
+print(tn.complete("hel"))'''
