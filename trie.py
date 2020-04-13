@@ -131,7 +131,4 @@ class Trie:
         return matches
 
 
-tn = Trie()
-doc = Document("gfg.txt")
-tn.add_doc(doc)
-print(tn)
+    
