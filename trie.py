@@ -93,7 +93,7 @@ def match(node: TrieNode, prefix: str, trace: str) -> [(str, [Location])]:
 
     node = search(node, prefix)
     word = prefix
-    return dfs(node, word)
+    return dfs(node, word, trace)
 
 
 @dataclass
