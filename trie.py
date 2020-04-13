@@ -15,12 +15,9 @@ class TrieNode:
 
 def trie_preprocess(word: str) -> str:
     """Returns a processed version of word appropriate for adding to the trie.
-
     Implement as you wish. The default version returns word as is .
-
     Args:
     - word: the word to process.
-
     Returns:
     An appropriately processed version of word.
     """
@@ -30,12 +27,9 @@ def trie_preprocess(word: str) -> str:
 def prefix_tokenize(prefix_string: str):
     """Returns a list of prefixes tokenized from prefix_string and appropriate
     for prefix matching in the trie.
-
     Implement as you wish. The default splits at whitespace.
-
     Args:
     - prefix_string: the string to tokenize.
-
     Returns:
     A list of prefix tokens appropriate for querying the index.
     """
@@ -45,22 +39,27 @@ def prefix_tokenize(prefix_string: str):
 def add_word(node: TrieNode, word: str, locs: [Location]) -> None:
     """Adds word as a path beginning at node and saves the document locations of
     words.
-
     Args:
     - node: the addition has to start at node
     - word: the word to add
     - locs: the locations where word appears in different documents
-
     Returns:
     None.
     """
 
     n = node.children
-    for i in range(len(word)):
-        if word[i] not in n:
-            n[word[i]] = {}
-        n = n[word[i]]
+    i = 0
+    for char in word:
+        if char not in n:
+            break
+        n = n[char]
+        i += 1
+
+    for j in range(i, len(word)):
+        n[word[j]] = {}
+        n = n[word[j]]
     n[TERMINATOR] = locs
+
 
 def search(node: TrieNode, prefix: str) -> TrieNode:
     for i in prefix:
@@ -81,21 +80,17 @@ def dfs(root: dict, word: str, final=[]) -> [(str, [Location])]:
 def match(node: TrieNode, prefix: str, trace: str) -> [(str, [Location])]:
     """Returns prefix-matching words starting at node and the document locations
     where the words occur.
-
     Prefix-matching is performed by tracing down the tree rooted at node. trace
     keeps track of the string remaining to be traced. When this function is
     called the first time, i.e. not recurcsively, prefix and trace MUST be the
     same.
-
     Args:
     - node: start prefix-matching at node.
     - prefix: the prefix to be matched.
     - trace: string to trace at node, MUST be == prefix at first call
-
     Returns:
     List of pairs where each pair contains a prefix-matched word and the
     locations where the word appears.
-
     """
 
     node = search(node, prefix)
@@ -110,11 +105,9 @@ class Trie:
 
     def add_doc(self, doc: Document) -> None:
         """Adds words from doc to the trie.
-
         Args:
         - self: this trie, the one to add to. mandatory object reference.
         - doc: the document whose words are to be added.
-
         Returns:
         None.
         """
@@ -124,11 +117,9 @@ class Trie:
     def complete(self, words: str) -> [(str, [Location])]:
         """Returns prefix-matches in the trie to each of the words and their locations
         in their documents.
-
         Args:
         - self: this trie, the one to match in . mandatory object reference.
         - words: contains words to match
-
         Returns:
         A list of pairs where each pair contains a prefix-matched word from the
         trie and a list of the locations where the word occurs in documents.
@@ -140,4 +131,7 @@ class Trie:
         return matches
 
 
-
+tn = Trie()
+doc = Document("gfg.txt")
+tn.add_doc(doc)
+print(tn)
