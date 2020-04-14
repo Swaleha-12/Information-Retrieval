@@ -65,13 +65,12 @@ def search(node: TrieNode, prefix: str) -> TrieNode:
     return node
 
 
-def dfs(root: TrieNode, word: str, trace: str, final=[]) -> [(str, [Location])]:
+def dfs(root: TrieNode, word: str, final=[]) -> [(str, [Location])]:
     for a in root.children.keys():
         if a == TERMINATOR:
-            if word != trace:
-                final.append((word, root.children[a]))
+            final.append((word, root.children[a]))
         else:
-            dfs(root.children[a], word+a, trace, final)
+            dfs(root.children[a], word+a, final)
     return final
 
 
@@ -91,9 +90,12 @@ def match(node: TrieNode, prefix: str, trace: str) -> [(str, [Location])]:
     locations where the word appears.
     """
 
-    node = search(node, prefix)
-    word = prefix
-    return dfs(node, word, trace)
+    while len(prefix) != 0:
+        for key in node.children.keys():
+            if prefix[0] == key:
+                node = node.children[key]
+                prefix = prefix[1:]
+    return dfs(node, trace)
 
 
 @dataclass
@@ -130,7 +132,6 @@ class Trie:
 
 
 '''tn = Trie()
-
 doc = Document("gfg.txt")
 tn.add_doc(doc)
 print(tn.complete("hel"))'''
