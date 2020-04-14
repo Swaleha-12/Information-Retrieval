@@ -1,7 +1,8 @@
 from document import *
 import math
 from operator import itemgetter
-from nltk.stem.porter import PorterStemmer as stemmer
+from nltk.stem.porter import PorterStemmer
+stemmer = PorterStemmer()
 
 
 
@@ -91,8 +92,9 @@ def index_preprocess(word: str) -> str:
     An appropriately processed version of word.
     """
     #stems each word before indexing
-    word = stemmer.stem(word)
-    return word
+    if len(word) > 1:
+      word = stemmer.stem(word)
+    return word if len(word) > 1 else ""
 
 def query_tokenize(query_string: str):
     """Returns a list of query words tokenized from query_string, appropriate
