@@ -1,6 +1,8 @@
 from document import *
 import math
 from operator import itemgetter
+from nltk.stem.porter import PorterStemmer as stemmer
+
 
 
 class Index:
@@ -15,9 +17,9 @@ class Index:
         Returns:
         None.
         """
-        self.index = dict() 
-        self.CountWords = dict()
-        self.N = 0
+        self.index = dict() # inverted index main dictionary with word as key and a tuple of document id and count of word in that document
+        self.CountWords = dict() #keeps count of number of words in each document
+        self.N = 0 #keeps count of the number of documents added s
 
     def add_doc(self, doc: Document) -> None:
         """Adds doc to the index.
@@ -32,7 +34,7 @@ class Index:
         self.N+=1
         i = 0
         for word, loc in doc.words():
-          i += 1
+          i += 1 #number of processed words in doc
           word = index_preprocess(word)
           if word:
             self.index[word] = self.index.get(word, []) + [(doc.doc_id, len(loc))]
@@ -59,7 +61,7 @@ class Index:
         #tf(t,d) = count of t in d / number of words in d
         #df(t) = occurrence of t in documents
         df = 0
-        TF_IDF = dict()
+        TF_IDF = dict() #the final result dictionary
         query_string = query_tokenize(query_string)
         for word in query_string:
           df = len(self.index.get(word, []))
@@ -88,8 +90,9 @@ def index_preprocess(word: str) -> str:
     Returns:
     An appropriately processed version of word.
     """
+    #stems each word before indexing
+    word = stemmer.stem(word)
     return word
-
 
 def query_tokenize(query_string: str):
     """Returns a list of query words tokenized from query_string, appropriate
@@ -103,4 +106,12 @@ def query_tokenize(query_string: str):
     Returns:
     A list of query tokens appropriate for querying the index.
     """
-    return query_string.split()
+    query_string = query_string.lower()
+    query_string = query_string.replace("'", "") #removing apostrophe
+    special_char = "!\"#$%&()*+-./:;<=>?@[\]^_`{|}~\n" #replacing special characters and punctuations with empty space
+    for i in special_char:
+      query_string = query_string.replace(i , " ")
+
+    query_string = query_string.split()
+    query_string = [index_preprocess(word) for word in query_string] #each word in query_string is stemmed
+    return query_string
