@@ -47,9 +47,10 @@ def add_word(node: TrieNode, word: str, locs: [Location]) -> None:
     None.
     """
 
-    i = 0
+    i = 0  # to keep track of the letters that are present in the trie already
     for char in word:
         if char not in node.children.keys():
+            # create a new node if its not in the trie
             node.children[char] = TrieNode()
         node = node.children[char]
         i += 1
@@ -58,20 +59,15 @@ def add_word(node: TrieNode, word: str, locs: [Location]) -> None:
         node.children[TERMINATOR] = locs
 
 
-"""def search(node: TrieNode, prefix: str) -> TrieNode:
-    for i in prefix:
-        if i in node.children.keys():
-            node = node.children[i]
-    return node"""
-
-
 def dfs(root: TrieNode, word: str) -> [(str, [Location])]:
 
     final = []
     for a in root.children.keys():
         if a == TERMINATOR:
+            # append the word and the location
             final.append((word, root.children[a]))
         else:
+            # run the function again for updated node and word
             final.extend(dfs(root.children[a], word+a))
     return final
 
@@ -89,22 +85,15 @@ def match(node: TrieNode, prefix: str, trace: str) -> [(str, [Location])]:
     - trace: string to trace at node, MUST be == prefix at first call
     Returns:
     List of pairs where each pair contains a prefix-matched word and the
-    locations where the word appears.
+    locations where the word appears."""
 
-
-
-    while len(prefix) > 0:
-        for key in node.children.keys():
-            if prefix[0] == key:
-                node = node.children[key]
-                prefix = prefix[1:]
-    return dfs(node, trace)"""
-    if len(prefix) == 0:
-        return dfs(node, trace)
+    if len(prefix) == 0:  # when completely traversed
+        return dfs(node, trace)  # return possible suggestions
     else:
         for a in node.children.keys():
             if a == prefix[0]:
                 node = node.children[a]
+                # run the function again for updated node and prefix
                 return match((node), prefix[1:], trace)
 
 
@@ -139,9 +128,3 @@ class Trie:
         for w in words:
             matches.extend(match(self._root, w, w))
         return matches
-
-
-"""tn = Trie()
-doc = Document("gfg.txt")
-tn.add_doc(doc)
-print(tn.complete("hel"))"""
