@@ -15,9 +15,9 @@ class Index:
         Returns:
         None.
         """
-        self.index = dict() 
-        self.CountWords = dict()
-        self.N = 0
+        self.index = dict() # inverted index main dictionary with word as key and a tuple of document id and count of word in that document
+        self.CountWords = dict() #keeps count of number of words in each document
+        self.N = 0 #keeps count of the number of documents added s
 
     def add_doc(self, doc: Document) -> None:
         """Adds doc to the index.
@@ -59,12 +59,12 @@ class Index:
         #tf(t,d) = count of t in d / number of words in d
         #df(t) = occurrence of t in documents
         df = 0
-        TF_IDF = dict()
+        TF_IDF = dict()  #the final result dictionary
         query_string = query_tokenize(query_string)
         for word in query_string:
-          df = len(self.index.get(word, []))
+          df = len(self.index.get(word, [])) 
           if not df:
-            df = 1
+            df = 1 # to avoid division by 0
           for docId, count in self.index.get(word,[]):
             tf = count/self.CountWords[docId]
             tf_idf = tf * math.log(self.N/df, 10)
