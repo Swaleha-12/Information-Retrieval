@@ -63,7 +63,8 @@ Please use the following avenues:
 - discuss with your peers
 - talk to course staff in their desginated hours
 
-## Liabraries to Install:
-- NumPy
-- nltk (if error arises in stopwords then first download them by uncommenting line 5 in Document.py)
+## Refinements:
+- Made lowercase, removed apostrophe, replaced punctuation with empty space in document_tokenize and query_tokenize in index.py because document is being tokenized with whitespace as a delimitter and some punctuation (e.g hyphen) joins words hence it is important to replace those punctuation with whitespace first.
+- Stemmed words in index_preprocess and removed single characters. 
+- Download nltk library for stop words and stemming. (If error arises in stopwords then first download them by uncommenting line 5 in Document.py)
 
