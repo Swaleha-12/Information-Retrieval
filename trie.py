@@ -58,19 +58,21 @@ def add_word(node: TrieNode, word: str, locs: [Location]) -> None:
         node.children[TERMINATOR] = locs
 
 
-def search(node: TrieNode, prefix: str) -> TrieNode:
+"""def search(node: TrieNode, prefix: str) -> TrieNode:
     for i in prefix:
         if i in node.children.keys():
             node = node.children[i]
-    return node
+    return node"""
 
 
-def dfs(root: TrieNode, word: str, final=[]) -> [(str, [Location])]:
+def dfs(root: TrieNode, word: str) -> [(str, [Location])]:
+
+    final = []
     for a in root.children.keys():
         if a == TERMINATOR:
             final.append((word, root.children[a]))
         else:
-            dfs(root.children[a], word+a, final)
+            final.extend(dfs(root.children[a], word+a))
     return final
 
 
@@ -88,14 +90,22 @@ def match(node: TrieNode, prefix: str, trace: str) -> [(str, [Location])]:
     Returns:
     List of pairs where each pair contains a prefix-matched word and the
     locations where the word appears.
-    """
+
+
 
     while len(prefix) > 0:
         for key in node.children.keys():
             if prefix[0] == key:
                 node = node.children[key]
                 prefix = prefix[1:]
-    return dfs(node, trace)
+    return dfs(node, trace)"""
+    if len(prefix) == 0:
+        return dfs(node, trace)
+    else:
+        for a in node.children.keys():
+            if a == prefix[0]:
+                node = node.children[a]
+                return match((node), prefix[1:], trace)
 
 
 @dataclass
@@ -131,7 +141,7 @@ class Trie:
         return matches
 
 
-'''tn = Trie()
+"""tn = Trie()
 doc = Document("gfg.txt")
 tn.add_doc(doc)
-print(tn.complete("hel"))'''
+print(tn.complete("hel"))"""
