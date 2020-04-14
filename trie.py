@@ -90,7 +90,7 @@ def match(node: TrieNode, prefix: str, trace: str) -> [(str, [Location])]:
     locations where the word appears.
     """
 
-    while len(prefix) != 0:
+    while len(prefix) > 0:
         for key in node.children.keys():
             if prefix[0] == key:
                 node = node.children[key]
