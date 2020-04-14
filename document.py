@@ -67,11 +67,14 @@ def document_tokenize(content: str) -> {str: [(int, int)]}:
     A dictionary in which each key is a unique token from content and the value
     is a list of (start, stop) indexes in content where the word appears.
     """
-    # Extract ID from path and read the content.
+        # Extract ID from path and read the content.
     i = 0
     words = dict()
     stop_words = stopwords.words('english') #remove stop words
-    content = content.replace("\n", " ") #replacing all the newlins with space so that following code can be executed
+    content = content.replace("'", "") #removing apostrophe
+    special_char = "!\"#$%&()*+-./:;<=>?@[\]^_`{|}~\n"
+    for i in special_char:
+      content = content.replace(i , " ") #replacing all punctuation except apostrophe with space so that following code can be executed
     while content[i:]:
         # Ignore non-letters
         if not content[i].isalpha():
